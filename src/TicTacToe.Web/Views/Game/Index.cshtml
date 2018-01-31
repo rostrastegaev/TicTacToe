@@ -1,0 +1,39 @@
+﻿@model GameViewModel
+
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <div class="game" data-id="@Model.Id" data-mark="@(Model.IsPlayerFirst ? 'x' : 'o')">
+            @for (int i = 0; i < GameConstants.TABLE_SIZE; ++i)
+            {
+                <div class="row">
+                    @for (int j = 0; j < GameConstants.TABLE_SIZE; ++j)
+                    {
+                        <div class="col-4 game__cell">
+                            @{
+                                var cell = Model.History?.FirstOrDefault(t => t.Cell.X == i && t.Cell.Y == j);
+                            }
+                            @if (cell != null)
+                            {
+                                @if (cell.Mark == PlayerMark.X)
+                                {
+                                    <div class="game__mark game__mark_x"></div>
+                                }
+                                else
+                                {
+                                    <div class="game__mark game__mark_o"></div>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="row form-group justify-content-center">
+            <span class="game__computer" title="Computer first"></span>
+            <div class="game__message"></div>
+        </div>
+    </div>
+    <div class="col-md-6 offset-md-1 col-sm-12">
+        @Html.Partial("GamesList", false)
+    </div>
+</div>

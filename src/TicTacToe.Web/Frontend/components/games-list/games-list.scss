@@ -1,0 +1,25 @@
+﻿.page-link:focus {
+    box-shadow: none;
+}
+
+.games-list {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.games-list__game {
+    cursor: pointer;
+
+    &:hover {
+        background-color: #222222;
+    }
+}
+
+.game-list__back {
+    font-size: 26px;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+    }
+}

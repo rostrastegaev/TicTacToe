@@ -1,0 +1,31 @@
+﻿@model GameViewModel
+
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <div class="game" data-mode="view" data-object='@Json.Serialize(Model, new Newtonsoft.Json.JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() })'>
+            <div class="row">
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+            </div>
+            <div class="row">
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+            </div>
+            <div class="row">
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+                <div class="col-4 game__cell"></div>
+            </div>
+        </div>
+        <div class="row form-group justify-content-center">
+            <span class="game__message">@(Model.IsPlayerFirst ? "User: X" : "User: O")</span>
+            <span class="game__previous" title="Previous"></span>
+            <span class="game__next" title="Next"></span>
+        </div>
+    </div>
+    <div class="col-md-6 offset-md-1 col-sm-12">
+        @Html.Partial("GamesList", true)
+    </div>
+</div>
