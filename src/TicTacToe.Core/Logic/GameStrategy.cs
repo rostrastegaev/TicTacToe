@@ -103,60 +103,44 @@ namespace TicTacToe.Core
             public GameTurnNode GetBestChild()
             {
                 var opponent = TurnInfo?.Player ?? _childs[0]._childs[0].TurnInfo.Player;
-                int bestPoints = 0;
+                int bestPoints = -GameConstants.STRATEGY_MAX_POINTS * 2;
                 GameTurnNode bestChild = null;
 
-                if (opponent.Mark == PlayerMark.O)
+                foreach (var child in Childs)
                 {
-                    bestPoints = -GameConstants.STRATEGY_MAX_POINTS * 2;
-                    foreach (var child in Childs)
+                    var childPoints = child.GetPoints(opponent, Level);
+                    if (bestPoints < childPoints)
                     {
-                        var childPoints = child.GetPoints();
-                        if (bestPoints < childPoints)
-                        {
-                            bestPoints = childPoints;
-                            bestChild = child;
-                        }
-                    }
-                }
-                else
-                {
-                    bestPoints = GameConstants.STRATEGY_MAX_POINTS * 2;
-                    foreach (var child in Childs)
-                    {
-                        var childPoints = child.GetPoints();
-                        if (bestPoints > childPoints)
-                        {
-                            bestPoints = childPoints;
-                            bestChild = child;
-                        }
+                        bestPoints = childPoints;
+                        bestChild = child;
                     }
                 }
 
                 return bestChild;
             }
 
-            private int GetPoints()
+            private int GetPoints(IPlayer opponent, int rootLevel)
             {
                 if (IsLeaf)
                 {
                     if (TurnInfo.GameState is WinnerGameState state)
                     {
-                        return TurnInfo.Player.Mark == PlayerMark.X ?
-                            GameConstants.STRATEGY_MAX_POINTS - Level :
-                            -GameConstants.STRATEGY_MAX_POINTS + Level;
+                        return state.Winner.Equals(opponent) ?
+                            (Level - rootLevel) - GameConstants.STRATEGY_MAX_POINTS :
+                            GameConstants.STRATEGY_MAX_POINTS - (Level - rootLevel);
                     }
                     return 0;
                 }
 
                 int bestPoints = 0;
-                if (TurnInfo.Player.Mark == PlayerMark.X)
+
+                if (!TurnInfo.Player.Equals(opponent))
                 {
-                    bestPoints = -GameConstants.STRATEGY_MAX_POINTS * 2;
+                    bestPoints = GameConstants.STRATEGY_MAX_POINTS * 2;
                     foreach (var child in Childs)
                     {
-                        var childPoints = child.GetPoints();
-                        if (bestPoints < childPoints)
+                        int childPoints = child.GetPoints(opponent, rootLevel);
+                        if (bestPoints > childPoints)
                         {
                             bestPoints = childPoints;
                         }
@@ -164,17 +148,16 @@ namespace TicTacToe.Core
                 }
                 else
                 {
-                    bestPoints = GameConstants.STRATEGY_MAX_POINTS * 2;
+                    bestPoints = -GameConstants.STRATEGY_MAX_POINTS * 2;
                     foreach (var child in Childs)
                     {
-                        var childPoints = child.GetPoints();
-                        if (bestPoints > childPoints)
+                        int childPoints = child.GetPoints(opponent, rootLevel);
+                        if (bestPoints < childPoints)
                         {
                             bestPoints = childPoints;
                         }
                     }
                 }
-
                 return bestPoints;
             }
         }
